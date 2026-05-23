@@ -64,6 +64,7 @@ fig.add_trace(go.Scatter(
 fig.add_trace(go.Scatter(
     x=series.index,
     y=series.rolling(50).mean(),
+    
     mode='lines',
     name='MA50',
     line=dict(dash='dash')
