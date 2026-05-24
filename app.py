@@ -91,3 +91,26 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig)
+
+returns = df.pct_change()
+volatility = returns.rolling(30).std() * 100
+
+fig = go.Figure()
+
+for col in volatility:
+    fig.add_trace(go.Scatter(
+    x=volatility.index,
+    y=volatility[col],
+
+    mode='lines',
+    name=col,
+    line=dict(width=2)
+    ))
+
+fig.update_layout(
+    title="Volatility",
+    xaxis_title='Date',
+    yaxis_title='Volatility (%)'
+)
+
+st.plotly_chart(fig)
