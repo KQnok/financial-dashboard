@@ -69,3 +69,25 @@ fig.add_trace(go.Scatter(
 ))
 
 st.plotly_chart(fig)
+
+normalized = df / df.iloc[0] * 100 
+
+fig = go.Figure()
+
+for col in normalized:
+    fig.add_trace(go.Scatter(
+    x=normalized.index,
+    y=normalized[col],
+
+    mode='lines',
+    name=col,
+    line=dict(width=2)
+    ))
+
+fig.update_layout(
+    title="Normalized",
+    xaxis_title='Date',
+    yaxis_title='Growth (base 100)'
+)
+
+st.plotly_chart(fig)
