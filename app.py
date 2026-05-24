@@ -35,9 +35,10 @@ tick = st.sidebar.selectbox(
 
 series = df[tick]
 
-tab1, tab2, tab3 = st.tabs(["Ticker", "Normalization", "Volatility"])
+tab1, tab2, tab3, tab4 = st.tabs(["Ticker", "Normalization", "Volatility","Sharpe Ratio"])
 
 with tab1:
+
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(
@@ -73,9 +74,10 @@ with tab1:
 
     st.plotly_chart(fig)
 
-with tab2:
-    normalized = df / df.iloc[0] * 100 
+normalized = df / df.iloc[0] * 100 
 
+with tab2:
+    
     fig = go.Figure()
 
     for col in normalized:
@@ -96,9 +98,10 @@ with tab2:
 
     st.plotly_chart(fig)
 
+returns = df.pct_change()
+volatility = returns.rolling(30).std() * 100
+
 with tab3:
-    returns = df.pct_change()
-    volatility = returns.rolling(30).std() * 100
 
     fig = go.Figure()
 
@@ -117,5 +120,29 @@ with tab3:
         xaxis_title='Date',
         yaxis_title='Volatility (%)'
     )
+
+    st.plotly_chart(fig)
+
+mean_returns = returns.mean()
+std_returns = returns.std()
+sharpe_ratio = (mean_returns/std_returns)*(252**0.5)
+
+with tab4:
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=sharpe_ratio.index,
+        y=sharpe_ratio.values,
+
+        name=tick
+    ))
+
+    fig.update_layout(
+        title="Sharpe Ratio",
+        xaxis_title='Tick',
+        yaxis_title='Sharpe Ratio'
+    )
+
+    st.caption("Sharpe > 1 — good, > 2 — very good, negative — return doesn't justify the risk")
 
     st.plotly_chart(fig)
