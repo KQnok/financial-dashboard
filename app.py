@@ -35,82 +35,87 @@ tick = st.sidebar.selectbox(
 
 series = df[tick]
 
-fig = go.Figure()
+tab1, tab2, tab3 = st.tabs(["Ticker", "Normalization", "Volatility"])
 
-fig.add_trace(go.Scatter(
+with tab1:
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
     x=series.index,
     y=series,
     mode='lines',
     name=tick,
     line=dict(color='firebrick', width=2)
-))
+    ))
 
-fig.update_layout(
+    fig.update_layout(
     title=tick,
     xaxis_title='Date',
     yaxis_title='Price (USD)'
-)
+    )
 
-fig.add_trace(go.Scatter(
+    fig.add_trace(go.Scatter(
     x=series.index,
     y=series.rolling(20).mean(),
     mode='lines',
     name='MA20',
     line=dict(dash='dash')
-))
+    ))
 
-fig.add_trace(go.Scatter(
+    fig.add_trace(go.Scatter(
     x=series.index,
     y=series.rolling(50).mean(),
 
     mode='lines',
     name='MA50',
     line=dict(dash='dash')
-))
-
-st.plotly_chart(fig)
-
-normalized = df / df.iloc[0] * 100 
-
-fig = go.Figure()
-
-for col in normalized:
-    fig.add_trace(go.Scatter(
-    x=normalized.index,
-    y=normalized[col],
-
-    mode='lines',
-    name=col,
-    line=dict(width=2)
     ))
 
-fig.update_layout(
-    title="Normalized",
-    xaxis_title='Date',
-    yaxis_title='Growth (base 100)'
-)
+    st.plotly_chart(fig)
 
-st.plotly_chart(fig)
+with tab2:
+    normalized = df / df.iloc[0] * 100 
 
-returns = df.pct_change()
-volatility = returns.rolling(30).std() * 100
+    fig = go.Figure()
 
-fig = go.Figure()
+    for col in normalized:
+        fig.add_trace(go.Scatter(
+        x=normalized.index,
+        y=normalized[col],
 
-for col in volatility:
-    fig.add_trace(go.Scatter(
-    x=volatility.index,
-    y=volatility[col],
-
-    mode='lines',
-    name=col,
-    line=dict(width=2)
+        mode='lines',
+        name=col,
+        line=dict(width=2)
     ))
 
-fig.update_layout(
-    title="Volatility",
-    xaxis_title='Date',
-    yaxis_title='Volatility (%)'
-)
+    fig.update_layout(
+        title="Normalized",
+        xaxis_title='Date',
+        yaxis_title='Growth (base 100)'
+    )
 
-st.plotly_chart(fig)
+    st.plotly_chart(fig)
+
+with tab3:
+    returns = df.pct_change()
+    volatility = returns.rolling(30).std() * 100
+
+    fig = go.Figure()
+
+    for col in volatility:
+        fig.add_trace(go.Scatter(
+        x=volatility.index,
+        y=volatility[col],
+
+        mode='lines',
+        name=col,
+        line=dict(width=2)
+    ))
+
+    fig.update_layout(
+        title="Volatility",
+        xaxis_title='Date',
+        yaxis_title='Volatility (%)'
+    )
+
+    st.plotly_chart(fig)
