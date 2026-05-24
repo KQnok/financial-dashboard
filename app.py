@@ -51,8 +51,6 @@ fig.update_layout(
     yaxis_title='Price (USD)'
 )
 
-st.plotly_chart(fig)
-
 fig.add_trace(go.Scatter(
     x=series.index,
     y=series.rolling(20).mean(),
@@ -64,8 +62,10 @@ fig.add_trace(go.Scatter(
 fig.add_trace(go.Scatter(
     x=series.index,
     y=series.rolling(50).mean(),
-    
+
     mode='lines',
     name='MA50',
     line=dict(dash='dash')
 ))
+
+st.plotly_chart(fig)
